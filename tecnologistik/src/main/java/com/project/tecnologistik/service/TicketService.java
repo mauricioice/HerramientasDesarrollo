@@ -1,5 +1,8 @@
 package com.project.tecnologistik.service;
 
+import com.project.tecnologistik.dto.AnalizarTicketRequest;
+import com.project.tecnologistik.dto.AnalizarTicketResponse;
+import com.project.tecnologistik.dto.ClienteTicketRequest;
 import com.project.tecnologistik.dto.TicketRequest;
 import com.project.tecnologistik.model.Categoria;
 import com.project.tecnologistik.model.HistorialTicket;
@@ -22,17 +25,20 @@ public class TicketService {
     private final CategoriaRepository categoriaRepository;
     private final UsuarioRepository usuarioRepository;
     private final HistorialTicketRepository historialTicketRepository;
+    private final GeminiIaService geminiIaService;
 
     public TicketService(
             TicketRepository ticketRepository,
             CategoriaRepository categoriaRepository,
             UsuarioRepository usuarioRepository,
-            HistorialTicketRepository historialTicketRepository
+            HistorialTicketRepository historialTicketRepository,
+            GeminiIaService geminiIaService
     ) {
         this.ticketRepository = ticketRepository;
         this.categoriaRepository = categoriaRepository;
         this.usuarioRepository = usuarioRepository;
         this.historialTicketRepository = historialTicketRepository;
+        this.geminiIaService = geminiIaService;
     }
 
     public Ticket crearTicket(TicketRequest request, UUID usuarioId) {
@@ -56,6 +62,11 @@ public class TicketService {
         ticket.setUsuario(usuario);
         ticket.setCategoria(categoria);
 
+        ticket.setTipoSolicitud("INCIDENCIA");
+        ticket.setAreaDestino("TECNICO");
+        ticket.setRespuestaIa(null);
+        ticket.setAnalizadoPorIa(false);
+
         Ticket ticketGuardado = ticketRepository.save(ticket);
 
         guardarHistorial(
@@ -63,6 +74,59 @@ public class TicketService {
                 usuario,
                 "CREACION",
                 "Ticket creado correctamente"
+        );
+
+        return ticketGuardado;
+    }
+
+    public Ticket crearTicketCliente(ClienteTicketRequest request, UUID usuarioId) {
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        AnalizarTicketRequest iaRequest = new AnalizarTicketRequest();
+        iaRequest.setTitulo(request.getTitulo());
+        iaRequest.setDescripcion(request.getDescripcion());
+
+        AnalizarTicketResponse analisis = geminiIaService.analizarTicket(iaRequest);
+
+        Ticket ticket = new Ticket();
+
+        ticket.setCodigo("TK-" + System.currentTimeMillis());
+        ticket.setTitulo(request.getTitulo());
+        ticket.setDescripcion(request.getDescripcion());
+        ticket.setEstado("ABIERTO");
+        ticket.setFechaCreacion(LocalDateTime.now());
+        ticket.setUsuario(usuario);
+
+        ticket.setPrioridad(
+                analisis.getPrioridad() != null ? analisis.getPrioridad() : "MEDIA"
+        );
+
+        ticket.setTipoSolicitud(
+                analisis.getTipoSolicitud() != null ? analisis.getTipoSolicitud() : "INCIDENCIA"
+        );
+
+        ticket.setAreaDestino(
+                analisis.getAreaDestino() != null ? analisis.getAreaDestino() : "TECNICO"
+        );
+
+        ticket.setRespuestaIa(analisis.getRespuestaSugerida());
+        ticket.setAnalizadoPorIa(true);
+
+        ticket.setFechaLimite(null);
+        ticket.setTiempoEstimadoHoras(1);
+        ticket.setCategoria(null);
+        ticket.setTecnico(null);
+
+        Ticket ticketGuardado = ticketRepository.save(ticket);
+
+        guardarHistorial(
+                ticketGuardado,
+                usuario,
+                "CREACION_CLIENTE_IA",
+                "Ticket creado por cliente y analizado por IA. Área destino: "
+                        + ticketGuardado.getAreaDestino()
         );
 
         return ticketGuardado;

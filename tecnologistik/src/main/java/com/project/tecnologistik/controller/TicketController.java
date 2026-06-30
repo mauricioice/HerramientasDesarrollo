@@ -2,6 +2,7 @@ package com.project.tecnologistik.controller;
 
 import com.project.tecnologistik.dto.AsignarTicketRequest;
 import com.project.tecnologistik.dto.CambiarEstadoRequest;
+import com.project.tecnologistik.dto.ClienteTicketRequest;
 import com.project.tecnologistik.dto.TicketRequest;
 import com.project.tecnologistik.model.HistorialTicket;
 import com.project.tecnologistik.model.Ticket;
@@ -33,38 +34,38 @@ public class TicketController {
         );
     }
 
+    @PostMapping("/cliente")
+    public ResponseEntity<Ticket> crearTicketCliente(
+            @RequestBody ClienteTicketRequest request,
+            @RequestParam UUID usuarioId
+    ) {
+        return ResponseEntity.ok(
+                ticketService.crearTicketCliente(request, usuarioId)
+        );
+    }
+
     @GetMapping
     public ResponseEntity<List<Ticket>> listarTickets() {
-        return ResponseEntity.ok(
-                ticketService.listarTickets()
-        );
+        return ResponseEntity.ok(ticketService.listarTickets());
     }
 
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Ticket>> listarTicketsPorUsuario(
             @PathVariable UUID usuarioId
     ) {
-        return ResponseEntity.ok(
-                ticketService.listarTicketsPorUsuario(usuarioId)
-        );
+        return ResponseEntity.ok(ticketService.listarTicketsPorUsuario(usuarioId));
     }
 
     @GetMapping("/tecnico/{tecnicoId}")
     public ResponseEntity<List<Ticket>> listarTicketsPorTecnico(
             @PathVariable UUID tecnicoId
     ) {
-        return ResponseEntity.ok(
-                ticketService.listarTicketsPorTecnico(tecnicoId)
-        );
+        return ResponseEntity.ok(ticketService.listarTicketsPorTecnico(tecnicoId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> obtenerTicket(
-            @PathVariable UUID id
-    ) {
-        return ResponseEntity.ok(
-                ticketService.obtenerTicket(id)
-        );
+    public ResponseEntity<Ticket> obtenerTicket(@PathVariable UUID id) {
+        return ResponseEntity.ok(ticketService.obtenerTicket(id));
     }
 
     @PutMapping("/{id}")
@@ -74,11 +75,7 @@ public class TicketController {
             @RequestParam UUID usuarioAccionId
     ) {
         return ResponseEntity.ok(
-                ticketService.editarTicket(
-                        id,
-                        request,
-                        usuarioAccionId
-                )
+                ticketService.editarTicket(id, request, usuarioAccionId)
         );
     }
 
@@ -87,11 +84,7 @@ public class TicketController {
             @PathVariable UUID id,
             @RequestParam UUID usuarioAccionId
     ) {
-        ticketService.eliminarTicket(
-                id,
-                usuarioAccionId
-        );
-
+        ticketService.eliminarTicket(id, usuarioAccionId);
         return ResponseEntity.noContent().build();
     }
 
@@ -99,9 +92,7 @@ public class TicketController {
     public ResponseEntity<List<HistorialTicket>> obtenerHistorial(
             @PathVariable UUID id
     ) {
-        return ResponseEntity.ok(
-                ticketService.obtenerHistorial(id)
-        );
+        return ResponseEntity.ok(ticketService.obtenerHistorial(id));
     }
 
     @PutMapping("/asignar")
