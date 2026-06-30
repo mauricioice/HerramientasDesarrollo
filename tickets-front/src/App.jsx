@@ -72,7 +72,9 @@ export default function App() {
             : <Navigate to="/" />
         }
       />
-
+      <Route path="/usuario/dashboard" element={token ? <UsuarioDashboard /> : <Navigate to="/" />} />
+      <Route path="/usuario/crear-ticket" element={token ? <CrearTicketUsuario /> : <Navigate to="/" />} />
+      <Route path="/usuario/mis-tickets" element={token ? <MisTickets /> : <Navigate to="/" />} />
       <Route
         path="/tecnico/dashboard"
         element={
