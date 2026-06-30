@@ -11,6 +11,7 @@ import MiPerfil from "./pages/MiPerfil";
 import UsuarioDashboard from "./pages/USUARIO/UsuarioDashboard";
 import CrearTicketUsuario from "./pages/USUARIO/CrearTicketUsuario";
 import MisTickets from "./pages/USUARIO/MisTickets";
+import TecnicoDashboard from "./pages/TecnicoDashboard";
 
 export default function App() {
   const token = localStorage.getItem("token");
@@ -19,18 +20,91 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Login />} />
 
-      <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/" />} />
-      <Route path="/tickets" element={token ? <Tickets /> : <Navigate to="/" />} />
-      <Route path="/crear-ticket" element={token ? <CrearTicket /> : <Navigate to="/" />} />
-      <Route path="/categorias" element={token ? <Categorias /> : <Navigate to="/" />} />
-      <Route path="/usuarios" element={token ? <Usuarios /> : <Navigate to="/" />} />
-      <Route path="/perfil" element={token ? <MiPerfil /> : <Navigate to="/" />} />
+      <Route
+        path="/dashboard"
+        element={
+          token
+            ? <Dashboard />
+            : <Navigate to="/" />
+        }
+      />
 
-      <Route path="/usuario/dashboard" element={token ? <UsuarioDashboard /> : <Navigate to="/" />} />
-      <Route path="/usuario/crear-ticket" element={token ? <CrearTicketUsuario /> : <Navigate to="/" />} />
-      <Route path="/usuario/mis-tickets" element={token ? <MisTickets /> : <Navigate to="/" />} />
+      <Route
+        path="/tickets"
+        element={
+          token
+            ? <Tickets />
+            : <Navigate to="/" />
+        }
+      />
 
-      <Route path="*" element={<Navigate to="/dashboard" />} />
+      <Route
+        path="/crear-ticket"
+        element={
+          token
+            ? <CrearTicket />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/categorias"
+        element={
+          token
+            ? <Categorias />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/usuarios"
+        element={
+          token
+            ? <Usuarios />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/perfil"
+        element={
+          token
+            ? <MiPerfil />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/tecnico/dashboard"
+        element={
+          token
+            ? <TecnicoDashboard mode="dashboard" />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/tecnico/tickets"
+        element={
+          token
+            ? <TecnicoDashboard mode="tickets" />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/tecnico/reportes"
+        element={
+          token
+            ? <TecnicoDashboard mode="reportes" />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="*"
+        element={<Navigate to="/dashboard" />}
+      />
     </Routes>
   );
 }
