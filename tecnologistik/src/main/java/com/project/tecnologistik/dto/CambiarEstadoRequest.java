@@ -7,6 +7,7 @@ public class CambiarEstadoRequest {
     private UUID ticketId;
     private String nuevoEstado;
     private UUID usuarioAccionId;
+    private String observacionResolucion;
 
     public UUID getTicketId() {
         return ticketId;
@@ -30,5 +31,13 @@ public class CambiarEstadoRequest {
 
     public void setUsuarioAccionId(UUID usuarioAccionId) {
         this.usuarioAccionId = usuarioAccionId;
+    }
+
+    public String getObservacionResolucion() {
+        return observacionResolucion;
+    }
+
+    public void setObservacionResolucion(String observacionResolucion) {
+        this.observacionResolucion = observacionResolucion;
     }
 }

@@ -7,6 +7,7 @@ import CrearTicket from "./pages/CrearTicket";
 import Categorias from "./pages/Categorias";
 import Usuarios from "./pages/Usuarios";
 import MiPerfil from "./pages/MiPerfil";
+import TecnicoDashboard from "./pages/TecnicoDashboard";
 
 export default function App() {
   const token = localStorage.getItem("token");
@@ -68,6 +69,33 @@ export default function App() {
         element={
           token
             ? <MiPerfil />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/tecnico/dashboard"
+        element={
+          token
+            ? <TecnicoDashboard mode="dashboard" />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/tecnico/tickets"
+        element={
+          token
+            ? <TecnicoDashboard mode="tickets" />
+            : <Navigate to="/" />
+        }
+      />
+
+      <Route
+        path="/tecnico/reportes"
+        element={
+          token
+            ? <TecnicoDashboard mode="reportes" />
             : <Navigate to="/" />
         }
       />

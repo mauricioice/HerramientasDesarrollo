@@ -165,6 +165,15 @@ public class TicketService {
             String nuevoEstado,
             UUID usuarioAccionId
     ) {
+        return cambiarEstado(ticketId, nuevoEstado, usuarioAccionId, null);
+    }
+
+    public Ticket cambiarEstado(
+            UUID ticketId,
+            String nuevoEstado,
+            UUID usuarioAccionId,
+            String observacionResolucion
+    ) {
 
         Ticket ticket = obtenerTicket(ticketId);
 
@@ -175,7 +184,9 @@ public class TicketService {
 
         ticket.setEstado(nuevoEstado);
 
-        if ("RESUELTO".equals(nuevoEstado) || "CERRADO".equals(nuevoEstado)) {
+        if (observacionResolucion != null && !observacionResolucion.isBlank()) {
+            ticket.setObservacionResolucion(observacionResolucion.trim());
+        } else if ("RESUELTO".equals(nuevoEstado) || "CERRADO".equals(nuevoEstado)) {
             ticket.setObservacionResolucion("Ticket marcado como " + nuevoEstado);
         }
 

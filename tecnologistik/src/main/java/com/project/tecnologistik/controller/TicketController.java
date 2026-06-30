@@ -125,7 +125,8 @@ public class TicketController {
                 ticketService.cambiarEstado(
                         request.getTicketId(),
                         request.getNuevoEstado(),
-                        request.getUsuarioAccionId()
+                        request.getUsuarioAccionId(),
+                        request.getObservacionResolucion()
                 )
         );
     }
